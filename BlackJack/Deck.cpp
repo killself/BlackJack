@@ -6,15 +6,15 @@ Deck::Deck() : isEmpty_(false), cardNum_(0)
 	{
 		for (std::map<int, std::string>::iterator ranksIt = ranks_.begin(); ranksIt != ranks_.end(); ++ranksIt)
 		{
-			cards_.push_back(Card(suitsIt->second.c_str(), suitsIt->first.c_str(), ranksIt->second.c_str(), ranksIt->first));
+			cards_.push_back(new Card(suitsIt->second.c_str(), suitsIt->first.c_str(), ranksIt->second.c_str(), ranksIt->first));
 		}
 	}
 
 	shuffleTheDeck();
 }
 
-const Card& Deck::GiveCard() 
-{	
+Card* Deck::GiveCard()
+{
 	return cards_[cardNum_++];
 }
 

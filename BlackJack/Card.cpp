@@ -1,16 +1,6 @@
 #include "Card.h"
 
-Card::Card(const char* suit, const wchar_t* suitUnicode, const char* rank, int points) : suit_(suit), suitUnicode_(suitUnicode), rank_(rank), points_(points)/*, inDeck_(true)*/ { }
-
-//const bool Card::GetInDeck() const
-//{
-//	return inDeck_;
-//}
-//
-//void Card::SetInDeck(bool inDeck)
-//{
-//	inDeck_ = inDeck;
-//}
+Card::Card(const char* suit, const wchar_t* suitUnicode, const char* rank, int points) : suit_(suit), suitUnicode_(suitUnicode), rank_(rank), points_(points) { }
 
 const char* Card::GetSuit() const
 {

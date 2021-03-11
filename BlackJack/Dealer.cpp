@@ -5,15 +5,23 @@ Dealer::Dealer() : Player(L"Dealer") { }
 
 void Dealer::MakeAMove(Deck& deck)
 {
-	if (isPass_)
+	if (cardsOnHand_.size() == 0)
+	{
+		TakeCard(deck.GiveCard());
+		pass_ = true;
+		return;
+	}
+
+	if (pass_)
 	{
 		return;
 	}
 
 	TakeCard(deck.GiveCard());
 
-	if (points_ > 19)
+	if (points_ >= 17)
 	{
-		isPass_ = true;
+		pass_ = true;
 	}
 }
+

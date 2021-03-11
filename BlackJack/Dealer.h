@@ -12,7 +12,6 @@ public:
 	void MakeAMove(Deck& deck) override;
 
 private:
-
 	
 
 };

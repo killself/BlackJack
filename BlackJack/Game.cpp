@@ -1,23 +1,27 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game() : deck_(Deck()), player_(HumanPlayer()), dealer_(Dealer())
 {
-	deck_ = Deck();	
-	//players.push_back(Dealer());
-	//players.push_back(HumanPlayer());
+	players.push_back(&dealer_);
+	players.push_back(&player_);
 }
 
-void Game::Start()
+void Game::Menu()
 {
 	char menu = '0';
 
 	while (true)
 	{
 		std::wcout << "*********************************************************************************\n";
+		Sleep(150);
 		std::wcout << "\t\t\tThe Black Jack Game v0.01\n";
+		Sleep(150);
 		std::wcout << "*********************************************************************************\n\n";
+		Sleep(150);
 		std::wcout << "\nMENU:\n\n";
+		Sleep(150);
 		std::wcout << "1. Play the game\n";
+		Sleep(150);
 		std::wcout << "2. Exit\n";
 		std::cin >> menu;
 
@@ -34,38 +38,61 @@ void Game::Start()
 
 		system("cls");
 	}
+}
+
+void Game::Start()
+{
+	Menu();
 
 	while (true)
 	{	
-	
-		HumanPlayer player = HumanPlayer();
-		Dealer dealer = Dealer();
-		players.push_back(dealer);
-		players.push_back(player);
-		//player.MakeAMove(deck_);
-		players[1].MakeAMove(deck_);
-		//for (unsigned int i = 0; i < players.size(); ++i)
+		bool check = true;
+
+		for (Player* player : players)
+		{
+			player->MakeAMove(deck_);
+			check &= player->IsPass();
+		}
+
+		system("cls");
+
+		Show show = Show();		
+
+		for (Player* player : players)
+		{
+			show.ShowCards(*player);
+		}
+
+		//if (check)
 		//{
-		//	players[i].MakeAMove(deck_);
+		//	for (Player* player : players) // Что-то сделать с это фигнёй
+		//	{
+		//		if (player->GetName() != L"Dealer")
+		//		{
+		//			Situations situation = player->GetSituation();
+
+		//			switch (situation)
+		//			{
+		//			case Situations::Pass:
+
+		//				break;
+
+		//			case Situations::TwentyOne:
+
+		//				break;
+
+		//			case Situations::BlackJack:
+
+		//				break;
+
+		//			case Situations::Busts:
+
+		//				break;
+		//			}						 
+		//		}
+		//	}
 		//}
 
-		//system("cls");
-
-		//for (Player player : players)
-		//{
-		//	player.ShowCards();
-		//}
-
-		system("pause");		
-
-	//	if ()
-	//	{
-	//		system("cls");
-	//		std::cout << "\nYou win!\n\n";
-	//		Sleep(1000);
-	//		return 0;
-	//	}
-	//	Sleep(300);
-
+		Sleep(400);
 	}
 }
