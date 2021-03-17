@@ -4,13 +4,13 @@
 
 #include "Deck.h"
 
-enum class Situations
-{
-	Pass,
-	TwentyOne,
-	BlackJack,
-	Busts,
-};
+//enum class Situations
+//{
+//	Pass,
+//	TwentyOne,
+//	BlackJack,
+//	Busts,
+//};
 
 class Player
 {
@@ -18,17 +18,16 @@ public:
 
 	Player(std::wstring name);
 	void TakeCard(Card* card);
-	virtual void MakeAMove(Deck& deck);
-	Situations GetSituation() const;
+	virtual void MakeAMove();
+	//Situations GetSituation() const;
 	bool IsPass();
-	void NotPass();
 	std::wstring GetName() const;
 	int GetPoints() const;
 	const std::vector<Card*>& GetCardsOnHand() const;
 
 protected:
 
-	Situations situation_;
+	//Situations situation_;
 	int points_;
 	std::vector<Card*> cardsOnHand_;
 	bool isBlackJack;

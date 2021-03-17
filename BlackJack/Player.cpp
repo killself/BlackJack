@@ -10,7 +10,7 @@ void Player::TakeCard(Card* card)
 		{
 			points_ += 1;
 		}
-		else if (cardsOnHand_.size() == 1 && strcmp(cardsOnHand_[0]->GetRank(), "10") == 0)
+		else if (cardsOnHand_.size() == 1 && (strcmp(cardsOnHand_[0]->GetRank(), "10") == 0) || strcmp(cardsOnHand_[0]->GetRank(), "A "))
 		{
 			points_ = 21;
 			isBlackJack = true;
@@ -47,15 +47,15 @@ void Player::TakeCard(Card* card)
 	cardsOnHand_.push_back(card);
 }
 
-void Player::MakeAMove(Deck& deck)
+void Player::MakeAMove()
 {
 
 }
 
-Situations Player::GetSituation() const
-{
-	return situation_;
-}
+//Situations Player::GetSituation() const
+//{
+//	return situation_;
+//}
 
 bool Player::IsPass() 
 {
@@ -65,11 +65,6 @@ bool Player::IsPass()
 std::wstring Player::GetName() const
 {
 	return name_;
-}
-
-void Player::NotPass()
-{
-	pass_ = false;
 }
 
 int Player::GetPoints() const

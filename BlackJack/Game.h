@@ -14,12 +14,15 @@ public:
 
 	Game();
 	void Start();
-	void Menu();
 
 private:
 
+	void ShowCardsOnDesk();
+	void Menu();
+	bool Check(const std::vector<Player*>& players) const;
 	Deck deck_;
-	std::vector<Player*> players;
+	Show show_;
+	std::vector<Player*> players_;
 	HumanPlayer player_;
 	Dealer dealer_;
 };

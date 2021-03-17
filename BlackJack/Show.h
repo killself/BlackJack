@@ -9,7 +9,7 @@
 
 #include "Player.h"
 
-static class Show
+class Show
 {
 public:
 	Show();

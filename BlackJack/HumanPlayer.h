@@ -9,7 +9,7 @@ class HumanPlayer : public Player
 public:
 
 	HumanPlayer();
-	void MakeAMove(Deck& deck) override;
+	void MakeAMove() override;
 
 private:
 

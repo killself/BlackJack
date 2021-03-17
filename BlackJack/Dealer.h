@@ -9,7 +9,7 @@ class Dealer : public Player
 public:
 
 	Dealer();
-	void MakeAMove(Deck& deck) override;
+	void MakeAMove() override;
 
 private:
 	

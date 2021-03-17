@@ -1,9 +1,8 @@
 #include "Game.h"
 
-Game::Game() : deck_(Deck()), player_(HumanPlayer()), dealer_(Dealer())
-{
-	players.push_back(&dealer_);
-	players.push_back(&player_);
+Game::Game() : deck_(Deck()), player_(HumanPlayer()), dealer_(Dealer()), show_(Show())
+{	
+	players_.push_back(&player_);
 }
 
 void Game::Menu()
@@ -40,59 +39,100 @@ void Game::Menu()
 	}
 }
 
+bool Game::Check(const std::vector<Player*>& players) const
+{
+	// TODO...
+	return true;
+}
+
+void Game::ShowCardsOnDesk()
+{
+	show_.ShowCards(dealer_);
+
+	for (Player* player : players_)
+	{
+		show_.ShowCards(*player);
+	}
+}
+
 void Game::Start()
 {
 	Menu();
 
+	dealer_.TakeCard(deck_.GiveCard());
+
 	while (true)
 	{	
-		bool check = true;
+		bool check = false;		
 
-		for (Player* player : players)
+		for (Player* player : players_)
 		{
-			player->MakeAMove(deck_);
-			check &= player->IsPass();
+			player->MakeAMove();
+
+			if (!player->IsPass())
+			{
+				player->TakeCard(deck_.GiveCard());
+			}
+			else
+			{
+				check |= true;
+			}
+		}
+
+		if (check)
+		{
+			if (Check(players_))
+			{
+				while (!dealer_.IsPass())
+				{
+					dealer_.TakeCard(deck_.GiveCard());
+					dealer_.MakeAMove();
+					system("cls");
+					ShowCardsOnDesk();
+				}
+
+				std::wcout << "HuH'";
+				Sleep(1000);
+				return;
+			}
+			else
+			{
+				// TODO...
+			}
+
+			// TODO it, bleat'..
 		}
 
 		system("cls");
-
-		Show show = Show();		
-
-		for (Player* player : players)
-		{
-			show.ShowCards(*player);
-		}
-
-		//if (check)
-		//{
-		//	for (Player* player : players) // Что-то сделать с это фигнёй
-		//	{
-		//		if (player->GetName() != L"Dealer")
-		//		{
-		//			Situations situation = player->GetSituation();
-
-		//			switch (situation)
-		//			{
-		//			case Situations::Pass:
-
-		//				break;
-
-		//			case Situations::TwentyOne:
-
-		//				break;
-
-		//			case Situations::BlackJack:
-
-		//				break;
-
-		//			case Situations::Busts:
-
-		//				break;
-		//			}						 
-		//		}
-		//	}
-		//}
-
+		ShowCardsOnDesk();
 		Sleep(400);
 	}
 }
+
+
+//	for (Player* player : players) // Что-то сделать с это фигнёй
+//	{
+//		if (player->GetName() != L"Dealer")
+//		{
+//			Situations situation = player->GetSituation();
+//
+//			switch (situation)
+//			{
+//			case Situations::Pass:
+//
+//				break;
+//
+//			case Situations::TwentyOne:
+//
+//				break;
+//
+//			case Situations::BlackJack:
+//
+//				break;
+//
+//			case Situations::Busts:
+//
+//				break;
+//			}						 
+//		}
+//	}
