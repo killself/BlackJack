@@ -12,6 +12,10 @@ void HumanPlayer::MakeAMove()
 		{
 			return;
 		}
+		else if (pass_ == true)
+		{
+			return;
+		}
 
 		std::wcout << "\nDo you want to take a card? (y/n): ";
 		std::cin >> playerChoice;

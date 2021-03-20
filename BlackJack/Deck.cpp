@@ -15,6 +15,12 @@ Deck::Deck() : empty_(false), cardNum_(0)
 
 Card* Deck::GiveCard()
 {
+	if (cardNum_ == 52)
+	{
+		shuffleTheDeck();
+		cardNum_ = 0;
+	}
+
 	return cards_[cardNum_++];
 }
 

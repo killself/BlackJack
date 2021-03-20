@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(std::wstring name) : isBlackJack(false), points_(0), pass_(false), name_(name) { }
+Player::Player(std::wstring name) : blackJack_(false), pass_(false), busts_(false), points_(0), name_(name) { }
 
 void Player::TakeCard(Card* card)
 {
@@ -13,7 +13,7 @@ void Player::TakeCard(Card* card)
 		else if (cardsOnHand_.size() == 1 && (strcmp(cardsOnHand_[0]->GetRank(), "10") == 0) || strcmp(cardsOnHand_[0]->GetRank(), "A "))
 		{
 			points_ = 21;
-			isBlackJack = true;
+			blackJack_ = true;
 			pass_ = true;
 		}
 		else
@@ -26,7 +26,7 @@ void Player::TakeCard(Card* card)
 		if (cardsOnHand_.size() == 1 && strcmp(cardsOnHand_[0]->GetRank(), "A ") == 0)
 		{
 			points_ = 21;
-			isBlackJack = true;
+			blackJack_ = true;
 			pass_ = true;
 		}
 		else
@@ -39,9 +39,14 @@ void Player::TakeCard(Card* card)
 		points_ += card->GetPoints();
 	}
 
-	if (points_ > 21)
+	if (points_ == 21)
 	{
 		pass_ = true;
+	}
+	else if (points_ > 21)
+	{
+		pass_ = true;
+		busts_ = true;
 	}
 
 	cardsOnHand_.push_back(card);
@@ -52,14 +57,28 @@ void Player::MakeAMove()
 
 }
 
-//Situations Player::GetSituation() const
-//{
-//	return situation_;
-//}
+void Player::NewPlay()
+{
+	cardsOnHand_.clear();
+	pass_ = false;
+	points_ = 0;
+	blackJack_ = false;
+	busts_ = false;
+}
 
-bool Player::IsPass() 
+bool Player::IsPass() const
 {
 	return pass_;
+}
+
+bool Player::IsBusts() const
+{
+	return busts_;
+}
+
+bool Player::IsBlackJack() const
+{
+	return blackJack_;
 }
 
 std::wstring Player::GetName() const

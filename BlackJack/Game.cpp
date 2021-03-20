@@ -5,7 +5,7 @@ Game::Game() : deck_(Deck()), player_(HumanPlayer()), dealer_(Dealer()), show_(S
 	players_.push_back(&player_);
 }
 
-void Game::Menu()
+bool Game::Menu()
 {
 	char menu = '0';
 
@@ -26,23 +26,61 @@ void Game::Menu()
 
 		if (menu == '1')
 		{
-			break;
+			return false;
 		}
 		else if (menu == '2')
 		{
 			std::wcout << "\nGoodbye!\n\n";
 			Sleep(900);
-			return;
+			return true;
 		}
 
 		system("cls");
 	}
 }
 
-bool Game::Check(const std::vector<Player*>& players) const
+bool Game::EndRound()
 {
-	// TODO...
-	return true;
+	char playerChoice = ' ';
+
+	while (true)
+	{
+		system("cls");
+		std::wcout << "Do you want play again?(y/n): ";
+		std::cin >> playerChoice;
+
+		if (playerChoice == 'y')
+		{
+			//TODO...
+
+			dealer_.NewPlay();
+
+			for (Player* player : players_)
+			{
+				player->NewPlay();
+			}
+
+			return true;
+		}
+		else if (playerChoice == 'n')
+		{
+			break;
+		}
+	}
+
+	return false;
+}
+
+bool Game::CheckSituations(const std::vector<Player*>& players) const
+{
+	bool check = false;
+
+	for (Player* player : players)
+	{
+		check |= player->IsBusts();
+	}
+
+	return !check;
 }
 
 void Game::ShowCardsOnDesk()
@@ -55,9 +93,19 @@ void Game::ShowCardsOnDesk()
 	}
 }
 
+void Game::ShowSituations(std::wstring name, std::wstring situation)
+{
+	std::wcout << "------------------\n";
+	std::wcout << name << ", "<< situation << "!";
+	std::wcout << "\n------------------\n\n";
+}
+
 void Game::Start()
 {
-	Menu();
+	if (Menu())
+	{
+		return;
+	}
 
 	dealer_.TakeCard(deck_.GiveCard());
 
@@ -81,7 +129,7 @@ void Game::Start()
 
 		if (check)
 		{
-			if (Check(players_))
+			if (CheckSituations(players_))
 			{
 				while (!dealer_.IsPass())
 				{
@@ -91,16 +139,86 @@ void Game::Start()
 					ShowCardsOnDesk();
 				}
 
-				std::wcout << "HuH'";
-				Sleep(1000);
-				return;
+				if (!dealer_.IsBusts())
+				{
+					for (Player* player : players_)
+					{
+						if (player->IsBusts())
+						{
+							ShowSituations(player->GetName(), L"lose");
+						}
+						else
+						{
+							if (player->GetPoints() > dealer_.GetPoints())
+							{
+								ShowSituations(player->GetName(), L"win");
+							}
+							else if (player->GetPoints() < dealer_.GetPoints())
+							{
+								ShowSituations(player->GetName(), L"lose");
+							}
+							else if (player->GetPoints() == dealer_.GetPoints() && player->GetPoints() != 21)
+							{
+								ShowSituations(player->GetName(), L"Push");
+							}
+							else if (player->GetPoints() == dealer_.GetPoints() && player->GetPoints() == 21)
+							{
+								if (player->IsBlackJack() && !dealer_.IsBlackJack())
+								{
+									ShowSituations(player->GetName(), L"win");
+								}
+								else if (!player->IsBlackJack() && dealer_.IsBlackJack())
+								{
+									ShowSituations(player->GetName(), L"lose");
+								}
+								else if (!player->IsBlackJack() && !dealer_.IsBlackJack())
+								{
+									ShowSituations(player->GetName(), L"Push");
+								}
+							}
+						}
+					}
+				}
+				else 
+				{
+					for (Player* player : players_)
+					{
+						if (!player->IsBusts())
+						{
+							ShowSituations(player->GetName(), L"win");
+						}
+					}
+				}
+
+				Sleep(1000);				
 			}
 			else
 			{
-				// TODO...
+				system("cls");
+
+				if (!dealer_.IsBusts())
+				{
+					ShowSituations(dealer_.GetName(), L"win");
+				}
+				else
+				{
+					ShowSituations(L"All", L"lose");
+				}
+
+				Sleep(1000);
 			}
 
-			// TODO it, bleat'..
+			if (EndRound())
+			{
+				dealer_.TakeCard(deck_.GiveCard());
+				continue;
+			}
+			else
+			{
+				std::wcout << "\nGoodbye!\n\n";
+				Sleep(900);
+				return;
+			}
 		}
 
 		system("cls");
@@ -108,7 +226,6 @@ void Game::Start()
 		Sleep(400);
 	}
 }
-
 
 //	for (Player* player : players) // Что-то сделать с это фигнёй
 //	{

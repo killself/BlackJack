@@ -2,7 +2,6 @@
 
 Dealer::Dealer() : Player(L"Dealer") { }
 
-
 void Dealer::MakeAMove()
 {
 	if (points_ >= 17)
@@ -10,4 +9,3 @@ void Dealer::MakeAMove()
 		pass_ = true;
 	}
 }
-

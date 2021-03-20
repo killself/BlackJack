@@ -15,11 +15,14 @@ public:
 	Game();
 	void Start();
 
+
 private:
 
+	bool EndRound();
+	void ShowSituations(std::wstring name, std::wstring situation);
 	void ShowCardsOnDesk();
-	void Menu();
-	bool Check(const std::vector<Player*>& players) const;
+	bool Menu();
+	bool CheckSituations(const std::vector<Player*>& players) const;
 	Deck deck_;
 	Show show_;
 	std::vector<Player*> players_;
