@@ -17,15 +17,18 @@ public:
 	std::wstring GetName() const;
 	int GetPoints() const;
 	const std::vector<Card*>& GetCardsOnHand() const;
-	void NewPlay();
+	void NewPlay(); // обнуление статов у игрока
+	int GetWinsCount() const;
+	void WinIncrease(); 
 
 protected:
 
+	int winsCount_; 
 	int points_;
 	std::vector<Card*> cardsOnHand_;
 	std::wstring name_;
-	bool pass_;
-	bool busts_;
+	bool pass_; // пропуск хода
+	bool busts_; // перебор
 	bool blackJack_;
 };
 

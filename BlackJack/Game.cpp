@@ -45,14 +45,11 @@ bool Game::EndRound()
 
 	while (true)
 	{
-		system("cls");
 		std::wcout << "Do you want play again?(y/n): ";
 		std::cin >> playerChoice;
 
 		if (playerChoice == 'y')
 		{
-			//TODO...
-
 			dealer_.NewPlay();
 
 			for (Player* player : players_)
@@ -71,16 +68,95 @@ bool Game::EndRound()
 	return false;
 }
 
-bool Game::CheckSituations(const std::vector<Player*>& players) const
+void Game::CheckSituations()
 {
-	bool check = false;
+	bool checkBusts = true;
 
-	for (Player* player : players)
+	for (Player* player : players_)
 	{
-		check |= player->IsBusts();
+		checkBusts &= player->IsBusts();
 	}
 
-	return !check;
+	if (!checkBusts)
+	{
+		while (!dealer_.IsPass())
+		{
+			dealer_.TakeCard(deck_.GiveCard());
+			dealer_.MakeAMove();
+			system("cls");
+			ShowCardsOnDesk();
+		}
+
+		if (!dealer_.IsBusts())
+		{
+			for (Player* player : players_)
+			{
+				if (player->IsBusts())
+				{
+					ShowSituations(player->GetName(), L"lose");
+				}
+				else
+				{
+					if (player->GetPoints() > dealer_.GetPoints())
+					{
+						ShowSituations(player->GetName(), L"win");
+						player->WinIncrease();
+
+					}
+					else if (player->GetPoints() < dealer_.GetPoints())
+					{
+						ShowSituations(player->GetName(), L"lose");
+					}
+					else if (player->GetPoints() == dealer_.GetPoints() && player->GetPoints() != 21)
+					{
+						ShowSituations(player->GetName(), L"Push");
+					}
+					else if (player->GetPoints() == dealer_.GetPoints() && player->GetPoints() == 21)
+					{
+						if (player->IsBlackJack() && !dealer_.IsBlackJack())
+						{
+							ShowSituations(player->GetName(), L"win");
+							player->WinIncrease();
+						}
+						else if (!player->IsBlackJack() && dealer_.IsBlackJack())
+						{
+							ShowSituations(player->GetName(), L"lose");
+						}
+						else if (!player->IsBlackJack() && !dealer_.IsBlackJack())
+						{
+							ShowSituations(player->GetName(), L"Push");
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			for (Player* player : players_)
+			{
+				if (!player->IsBusts())
+				{
+					ShowSituations(player->GetName(), L"win");
+					player->WinIncrease();
+				}
+			}
+		}
+
+		Sleep(1000);
+	}
+	else
+	{
+		if (!dealer_.IsBusts())
+		{
+			ShowSituations(dealer_.GetName(), L"win");
+		}
+		else
+		{
+			ShowSituations(L"All", L"lose =(");
+		}
+
+		Sleep(1000);
+	}
 }
 
 void Game::ShowCardsOnDesk()
@@ -111,7 +187,7 @@ void Game::Start()
 
 	while (true)
 	{	
-		bool check = false;		
+		bool check = true;		
 
 		for (Player* player : players_)
 		{
@@ -120,93 +196,13 @@ void Game::Start()
 			if (!player->IsPass())
 			{
 				player->TakeCard(deck_.GiveCard());
-			}
-			else
-			{
-				check |= true;
+				check = false;
 			}
 		}
 
 		if (check)
 		{
-			if (CheckSituations(players_))
-			{
-				while (!dealer_.IsPass())
-				{
-					dealer_.TakeCard(deck_.GiveCard());
-					dealer_.MakeAMove();
-					system("cls");
-					ShowCardsOnDesk();
-				}
-
-				if (!dealer_.IsBusts())
-				{
-					for (Player* player : players_)
-					{
-						if (player->IsBusts())
-						{
-							ShowSituations(player->GetName(), L"lose");
-						}
-						else
-						{
-							if (player->GetPoints() > dealer_.GetPoints())
-							{
-								ShowSituations(player->GetName(), L"win");
-							}
-							else if (player->GetPoints() < dealer_.GetPoints())
-							{
-								ShowSituations(player->GetName(), L"lose");
-							}
-							else if (player->GetPoints() == dealer_.GetPoints() && player->GetPoints() != 21)
-							{
-								ShowSituations(player->GetName(), L"Push");
-							}
-							else if (player->GetPoints() == dealer_.GetPoints() && player->GetPoints() == 21)
-							{
-								if (player->IsBlackJack() && !dealer_.IsBlackJack())
-								{
-									ShowSituations(player->GetName(), L"win");
-								}
-								else if (!player->IsBlackJack() && dealer_.IsBlackJack())
-								{
-									ShowSituations(player->GetName(), L"lose");
-								}
-								else if (!player->IsBlackJack() && !dealer_.IsBlackJack())
-								{
-									ShowSituations(player->GetName(), L"Push");
-								}
-							}
-						}
-					}
-				}
-				else 
-				{
-					for (Player* player : players_)
-					{
-						if (!player->IsBusts())
-						{
-							ShowSituations(player->GetName(), L"win");
-						}
-					}
-				}
-
-				Sleep(1000);				
-			}
-			else
-			{
-				system("cls");
-
-				if (!dealer_.IsBusts())
-				{
-					ShowSituations(dealer_.GetName(), L"win");
-				}
-				else
-				{
-					ShowSituations(L"All", L"lose");
-				}
-
-				Sleep(1000);
-			}
+			CheckSituations();
 
 			if (EndRound())
 			{
@@ -226,30 +222,3 @@ void Game::Start()
 		Sleep(400);
 	}
 }
-
-//	for (Player* player : players) // Что-то сделать с это фигнёй
-//	{
-//		if (player->GetName() != L"Dealer")
-//		{
-//			Situations situation = player->GetSituation();
-//
-//			switch (situation)
-//			{
-//			case Situations::Pass:
-//
-//				break;
-//
-//			case Situations::TwentyOne:
-//
-//				break;
-//
-//			case Situations::BlackJack:
-//
-//				break;
-//
-//			case Situations::Busts:
-//
-//				break;
-//			}						 
-//		}
-//	}

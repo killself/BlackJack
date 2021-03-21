@@ -1,6 +1,6 @@
 #include "Deck.h"
 
-Deck::Deck() : empty_(false), cardNum_(0)
+Deck::Deck() : cardNum_(0)
 {
 	for (std::map<std::wstring, std::string>::iterator suitsIt = suits_.begin(); suitsIt != suits_.end(); ++suitsIt)
 	{
@@ -22,11 +22,6 @@ Card* Deck::GiveCard()
 	}
 
 	return cards_[cardNum_++];
-}
-
-bool Deck::IsEmpty() const
-{
-	return empty_;
 }
 
 void Deck::shuffleTheDeck()

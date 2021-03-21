@@ -14,7 +14,14 @@ void Show::ShowCards(const Player& player)
 	int changInX = 4;
 	int changInY = -4;
 
-	std::wcout << player.GetName() << "\nPoints: " << player.GetPoints() << "\n";
+	std::wcout << player.GetName();
+
+	if (player.GetName() != L"Dealer")
+	{
+		std::wcout << "(wins: " << player.GetWinsCount() << ")";
+	}
+
+	std::wcout << "\nPoints: " << player.GetPoints() << "\n";
 
 	CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
 
